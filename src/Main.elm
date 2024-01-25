@@ -1,11 +1,13 @@
 module Main exposing (..)
 
-import Element exposing (Element, el, text, row, alignRight, fill, width, rgb255, spacing, centerY, padding)
+import Element exposing (Element, el, text, column, row, alignRight, fill, width, rgb255, spacing, centerY, centerX, padding, px)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
+import Element.Input exposing (button)
 import Browser
 import Html.Events exposing (onClick)
+import Element exposing (layout)
 
 
 type alias Model =
@@ -14,82 +16,79 @@ type alias Model =
 type Msg
     = ClickedSoundButton Sound
 
+-- type Sound
+--     = Birds
+--         { expanded : Bool }
+--     | Boat
+--         { expanded : Bool }
+--     | City
+--         { expanded : Bool }
+--     | Cafe
+--         { expanded : Bool }
+--     | Fire
+--         { expanded : Bool }
+--     | Wind
+--         { expanded : Bool }
+--     | Rain
+--         { expanded : Bool }
+--     | Thunder
+--         { expanded : Bool }
+--     | SummerNight
+--         { expanded : Bool }
+--     | Waves
+--         { expanded : Bool }
+--     | WhiteNoise
+--         { expanded : Bool }
+--     | PinkNoise
+--         { expanded : Bool }
+
 type Sound
     = Birds
-        { expanded : Bool }
     | Boat
-        { expanded : Bool }
     | City
-        { expanded : Bool }
     | Cafe
-        { expanded : Bool }
     | Fire
-        { expanded : Bool }
     | Wind
-        { expanded : Bool }
     | Rain
-        { expanded : Bool }
     | Thunder
-        { expanded : Bool }
     | SummerNight
-        { expanded : Bool }
     | Waves
-        { expanded : Bool }
     | WhiteNoise
-        { expanded : Bool }
     | PinkNoise
-        { expanded : Bool }
 
 
-view = 
-    el
-        [ Background.color (rgb255 0 0 0) ]
+view sound = 
+    layout [ Background.color (rgb255 0 0 0) ] <|
+        column [ width fill, centerY, spacing 30 ]
         [
-            row [ width fill, centerY, spacing 30 ]
-                [ soundButton Birds
-                , soundButton Boat
-                , soundButton City
-                , soundButton Cafe
-                ]
-            , row [ width fill, centerY, spacing 30 ]
-                [ soundButton Fire
-                , soundButton Wind
-                , soundButton Rain
-                , soundButton Thunder
-                ]
-            , row [ width fill, centerY, spacing 30 ]
-                [ soundButton SummerNight
-                , soundButton Waves
-                , soundButton WhiteNoise
-                , soundButton PinkNoise
-                ]
+            row [ spacing 10, centerX ] [ soundButton Birds, soundButton Boat, soundButton City, soundButton Cafe ]
+            , row [ spacing 10, centerX ] [ soundButton Fire, soundButton Wind, soundButton Rain, soundButton Thunder ]
+            , row [ spacing 10, centerX ] [ soundButton SummerNight, soundButton Waves, soundButton WhiteNoise, soundButton PinkNoise ]
         ]
 
 
-update : Msg -> Model -> Model
 update msg model =
     case msg of
         ClickedSoundButton sound ->
-            { sound | expanded = not sound.expanded }
+            ( { model | typeOfSound = sound }, Cmd.none )
 
 
 
 
 
-soundButton : Sound -> Element msg
 soundButton sound =
-    el
+    button
         [ Background.color (rgb255 255 255 255)
         , Border.rounded 5
         , Border.width 1
         , Border.color (rgb255 0 0 0)
-        , width 100
+        , width (px 100)
         , padding 10
         , spacing 10
         , centerY
-        , onClick (ClickedSoundButton sound)
         ]
-        [ text (soundToString sound) ]
+        { label = text (soundToString sound)
+        , onPress = Just (ClickedSoundButton sound) }
 
 
 soundToString : Sound -> String
@@ -132,7 +131,13 @@ soundToString sound =
             "Pink Noise"
 
 
-main : Program () Model Msg
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( { typeOfSound = Birds }
+    , Cmd.none
+    )
+
+
 main =
     Browser.element
         { init = init
