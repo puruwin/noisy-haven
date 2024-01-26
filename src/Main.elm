@@ -1,12 +1,14 @@
 module Main exposing (..)
 
-import Element exposing (Element, el, text, column, row, alignRight, fill, width, rgb255, spacing, centerY, centerX, padding, px)
+import Element exposing (Element, el, text, column, row, image, alignRight, fill, width, rgb255, spacing, centerY, centerX, padding, px)
 import Element.Background as Background
 import Element.Border as Border
 import Element.Font as Font
 import Element.Input exposing (button)
 import Browser
+import Html exposing (Html, img)
 import Html.Events exposing (onClick)
+import Html.Attributes exposing (src)
 import Element exposing (layout)
 
 
@@ -57,7 +59,8 @@ type Sound
     | PinkNoise
 
 
-view sound = 
+view : a -> Html Msg
+view _ = 
     layout [ Background.color (rgb255 0 0 0) ] <|
         column [ width fill, centerY, spacing 30 ]
         [
@@ -76,9 +79,10 @@ update msg model =
 
 
 
+
 soundButton sound =
-    button
-        [ Background.color (rgb255 255 255 255)
+    image
+        [ Background.color (rgb255 0 0 255)
         , Border.rounded 5
         , Border.width 1
         , Border.color (rgb255 0 0 0)
@@ -87,8 +91,9 @@ soundButton sound =
         , spacing 10
         , centerY
         ]
-        { label = text (soundToString sound)
-        , onPress = Just (ClickedSoundButton sound) }
+        { src = "../public/img/" ++ soundToString sound ++ ".svg"
+        , description = soundToString sound
+        }
 
 
 soundToString : Sound -> String
@@ -119,16 +124,16 @@ soundToString sound =
             "Thunder"
 
         SummerNight ->
-            "Summer Night"
+            "SummerNight"
 
         Waves ->
             "Waves"
 
         WhiteNoise ->
-            "White Noise"
+            "WhiteNoise"
 
         PinkNoise ->
-            "Pink Noise"
+            "PinkNoise"
 
 
 init : () -> ( Model, Cmd Msg )
@@ -138,6 +143,7 @@ init _ =
     )
 
 
+main : Program () Model Msg
 main =
     Browser.element
         { init = init
