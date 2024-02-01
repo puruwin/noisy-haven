@@ -74,11 +74,7 @@ update msg model =
     case msg of
         ClickedSoundButton sound ->
             ( { model | typeOfSound = sound }, Cmd.none )
-
-
-
-
-
+            
 
 soundButton sound =
     image
